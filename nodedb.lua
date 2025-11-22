@@ -81,4 +81,15 @@ return function(nodemgr,addNode)
     NTSCToDigitalNode.outputs={nodemgr.ioElem.digital}
     NTSCToDigitalNode.color={0.4,0.9,0.9,0.2}
     addNode(NTSCToDigitalNode)
+
+    -- OTHER
+
+    local output = table.shallow_copy(nodemgr.nodeClass)
+    output.title="Output [DIGITAL]"
+    output.shortTitle="Out [D]"
+    output.id="output"
+    output.about="Outputs a digital video signal."
+    output.inputs={nodemgr.ioElem.digital}
+    output.color={0.5,0.5,0.5,0.2}
+    addNode(output)
 end

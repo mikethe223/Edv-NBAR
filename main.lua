@@ -21,6 +21,35 @@ function table.shallow_copy(t)
     return t2
 end
 
+function table.contains(table, element)
+    for _, value in pairs(table) do
+        if value == element then
+            return true
+        end
+    end
+    return false
+end
+
+-- Source - https://stackoverflow.com/a
+-- Posted by hookenz, modified by community. See post 'Timeline' for change history
+-- Retrieved 2025-11-13, License - CC BY-SA 4.0
+
+function dump(o)
+    if type(o) == 'table' then
+    local s = '{ '
+    for k,v in pairs(o) do
+        if type(k) ~= 'number' then
+            k = '"'..k..'"'
+        end
+        s = s .. '['..k..'] = ' .. dump(v) .. ',\n'
+    end
+    return s .. '} '
+    else
+        return tostring(o)
+    end
+end
+
+
 vernum = "v0.2.4"
 font = love.graphics.setNewFont("ShareTechMono-Regular.ttf")
 tile = love.graphics.newImage("tile.png")
@@ -99,9 +128,13 @@ end
 
 function handleConnectorSet(startConnector,startConnectorIDX,isStartOutput,startNode,endConnector,endConnectorIDX,isEndOutput,endNode)
     table.insert(nodemgr.nodeConnections,
-        {["output"]={startConnector,startConnectorIDX,isStartOutput,startNode}
-        ,["input"]={endConnector,endConnectorIDX,isEndOutput,endNode}}
+        {["output"]={startConnector,startConnectorIDX,isStartOutput,startNode},
+        ["input"]={endConnector,endConnectorIDX,isEndOutput,endNode}}
     )
+end
+
+function testConnectorSet(startConnector,startConnectorIDX,isStartOutput,startNode,endConnector,endConnectorIDX,isEndOutput,endNode)
+    return {["output"]={startConnector,startConnectorIDX,isStartOutput,startNode},["input"]={endConnector,endConnectorIDX,isEndOutput,endNode}}
 end
 
 function handleDragEnd()
@@ -143,7 +176,7 @@ function drawConnectorHover(mx,my)
     if hoveringConnector then
         local bbox = nodemgr.makeIOBbox(connectorNode,connectorNode:getBboxRect(),hoveredConnectorIDX,isOutputConnector)
         love.graphics.setColor(1,1,1,0.4)
-        love.graphics.rectangle("fill",bbox[1],bbox[2],bbox[3],bbox[4])
+        love.graphics.rectangle("fill",bbox[1],bbox[2],bbox[3],bbox[4],3,3,3)
     end
 end
 
@@ -201,8 +234,12 @@ function love.draw()
         renderHover("[i] "..hoverMsg,mx,my)
     end
 
+    -- debug
+    love.graphics.print(dump(nodemgr.nodeConnections), 5+nodemgr.offsetX, 5+nodemgr.offsetY)
+    love.graphics.print(dump(nodeList), 500+nodemgr.offsetX, 5+nodemgr.offsetY)
+
     -- NBAR text
-    love.graphics.setColor(0.9,0.9,0.9)
+    love.graphics.setColor(0.9,0.9,0.9,1)
     love.graphics.print('NBAR - Node-Based Analog Renderer '..vernum, 5, height-20)
 end
 

@@ -26,12 +26,6 @@ end
 
 -- Node connections
 nodemgr.nodeConnections = {
-    -- TODO: actually make this work
-    --[[ for example
-        node 1 output 1 = node 2 input 1
-        node 1 output 1 = node 3 input 2
-        node 2 output 1 = node 3 input 1
-    ]]
 }
 
 -- Node I/O rendering
@@ -183,7 +177,8 @@ function nodemgr.removeHoveredNode()
     end
 
     idx = indexOf(nodeList,hovered)
-    table.remove(nodeList,idx)
+    table.remove(nodeList,idx) -- and then another table remove that gets rid of its connections
+    -- table.remove(nodeConnections,???)
 end
 
 function nodemgr.makeIOBbox(scrnode,nodebbox,idx,isOutput)
@@ -228,14 +223,5 @@ function nodemgr.findHoveredNodebit(mx,my)
         end
     end
 end
-
--- use this to test nodes
---[[ local myNode = table.shallow_copy(nodemgr.nodeClass)
-myNode.title="Hello, World!"
-myNode.inputs={nodemgr.ioElem.avideo,nodemgr.ioElem.audioleft,nodemgr.ioElem.audioright}
-myNode.outputs={nodemgr.ioElem.digital}
-nodemgr.addNodeToScreen(myNode)
-nodemgr.addNodeToScreen(nodemgr.nodeClass) ]]
-
 
 return nodemgr
